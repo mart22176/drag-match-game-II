@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profession Match Game</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f0f8ff;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 20px;
+    }
+    .game-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+    .draggable {
+      width: 100px;
+      margin: 10px;
+      cursor: grab;
+    }
+    .drop-zone {
+      border: 2px dashed #aaa;
+      width: 120px;
+      height: 120px;
+      margin: 10px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff;
+    }
+    .drop-zone.correct {
+      background-color: #c8f7c5;
+    }
+    .drop-zone.incorrect {
+      background-color: #f7c5c5;
+    }
+  </style>
+</head>
+<body>
+  <h1>Match the Professional to Their Workplace</h1>
+
+  <div class="game-container" id="draggables">
+    <img src="https://i.imgur.com/VxLReT4.png" alt="Doctor" id="doctor" class="draggable" draggable="true" />
+    <img src="https://i.imgur.com/3nT4LDy.png" alt="Teacher" id="teacher" class="draggable" draggable="true" />
+    <img src="https://i.imgur.com/O0H2bTz.png" alt="Firefighter" id="firefighter" class="draggable" draggable="true" />
+    <img src="https://i.imgur.com/D0fP57j.png" alt="Police" id="police" class="draggable" draggable="true" />
+    <img src="https://i.imgur.com/U63S1Kq.png" alt="Paramedic" id="paramedic" class="draggable" draggable="true" />
+  </div>
+
+  <div class="game-container" id="dropzones">
+    <div class="drop-zone" data-profession="doctor">Hospital</div>
+    <div class="drop-zone" data-profession="teacher">School</div>
+    <div class="drop-zone" data-profession="firefighter">Fire Station</div>
+    <div class="drop-zone" data-profession="police">Police Station</div>
+    <div class="drop-zone" data-profession="paramedic">Ambulance</div>
+  </div>
+
+  <script>
+    const draggables = document.querySelectorAll('.draggable');
+    const dropzones = document.querySelectorAll('.drop-zone');
+
+    draggables.forEach(drag => {
+      drag.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', e.target.id);
+      });
+    });
+
+    dropzones.forEach(zone => {
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.style.borderColor = '#00aaff';
+      });
+
+      zone.addEventListener('dragleave', () => {
+        zone.style.borderColor = '#aaa';
+      });
+
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.style.borderColor = '#aaa';
+        const id = e.dataTransfer.getData('text/plain');
+        const dragged = document.getElementById(id);
+
+        if (zone.dataset.profession === id) {
+          zone.classList.add('correct');
+          zone.textContent = '✔ ' + zone.textContent;
+          dragged.remove();
+        } else {
+          zone.classList.add('incorrect');
+          setTimeout(() => zone.classList.remove('incorrect'), 1000);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
